@@ -2,7 +2,7 @@ package telran.util;
 
 import java.util.Iterator;
 import java.util.NoSuchElementException;
-
+import java.util.Objects;
 
 @SuppressWarnings("unchecked")
 public class HashSet<T> implements Set<T> {
@@ -137,13 +137,14 @@ public class HashSet<T> implements Set<T> {
 	public T get(T pattern) {
 		int index = getIndex(pattern, hashTable);
 		List<T> list = hashTable[index];
-		boolean res = false;
+		T res = null;
 		if (list != null) {
-			res = list.contains(pattern);
+			res = list.stream()
+					.filter(node -> pattern.hashCode() == node.hashCode())
+					.findAny()
+					.orElse(null);
 		}
-
-		return res ? pattern : null;
-
+		return res;
 	}
 
 }
