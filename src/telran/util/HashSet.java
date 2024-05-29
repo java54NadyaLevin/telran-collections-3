@@ -2,7 +2,7 @@ package telran.util;
 
 import java.util.Iterator;
 import java.util.NoSuchElementException;
-import java.util.Objects;
+
 
 @SuppressWarnings("unchecked")
 public class HashSet<T> implements Set<T> {
@@ -14,38 +14,35 @@ public class HashSet<T> implements Set<T> {
 
 	private class HashSetIterator implements Iterator<T> {
 		private List<T> currentList;
-		private int current;
+		private int index;
 
 		public HashSetIterator() {
-			this.currentList = getList();
-			this.current = 0;
+			this.currentList = new ArrayList<>(size);
+			getList();
+			this.index = 0;
 		}
 
-		private List<T> getList() {
-			List<T> listTmp = new ArrayList<>();
+		private void getList() {
 			for (List<T> list : hashTable) {
 				if (list != null) {
-					int i = 0;
 					for (T obj : list) {
-						listTmp.add(i++, obj);
+						currentList.add(obj);
 					}
 				}
 			}
-			return listTmp;
 		}
 
 		@Override
 		public boolean hasNext() {
-
-			return current < size;
+			return index < size;
 		}
 
 		@Override
 		public T next() {
-			if(!hasNext()) {
+			if (!hasNext()) {
 				throw new NoSuchElementException();
 			}
-			return currentList.get(current++);
+			return currentList.get(index++);
 		}
 	}
 
@@ -104,16 +101,10 @@ public class HashSet<T> implements Set<T> {
 
 	}
 
-	private int getIndex(T obj) {
-		int hashCode = obj.hashCode();
-		int index = Math.abs(hashCode % hashTable.length);
-		return index;
-	}
-
 	@Override
 	public boolean remove(T pattern) {
 		boolean res = false;
-		int index = getIndex(pattern);
+		int index = getIndex(pattern, hashTable);
 		List<T> list = hashTable[index];
 		if (list != null) {
 			res = list.remove(pattern);
@@ -125,7 +116,7 @@ public class HashSet<T> implements Set<T> {
 
 	@Override
 	public boolean contains(T pattern) {
-		int index = getIndex(pattern);
+		int index = getIndex(pattern, hashTable);
 		List<T> list = hashTable[index];
 		return list != null && list.contains(pattern);
 	}
@@ -144,7 +135,7 @@ public class HashSet<T> implements Set<T> {
 
 	@Override
 	public T get(T pattern) {
-		int index = getIndex(pattern);
+		int index = getIndex(pattern, hashTable);
 		List<T> list = hashTable[index];
 		boolean res = false;
 		if (list != null) {
