@@ -44,6 +44,7 @@ public abstract class CollectionTest {
 		runTest(Arrays.copyOfRange(numbers, 1, numbers.length));
 		assertFalse(collection.remove(newNumber));
 	}
+
 	protected void runTest(Integer[] expected) {
 		Integer [] actual = collection.stream().toArray(Integer[]::new);
 		assertArrayEquals(expected, actual);

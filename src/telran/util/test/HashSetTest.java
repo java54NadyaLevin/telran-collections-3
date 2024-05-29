@@ -22,3 +22,4 @@ protected void runTest(Integer[] expected) {
 	assertArrayEquals(expected, actual);
 }
 }
+
